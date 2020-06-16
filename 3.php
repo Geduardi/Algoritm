@@ -1,44 +1,56 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
-<form method="get">
-    <input type="text" name="input">
-</form>
-</body>
-</html>
 <?php
 
-if (!empty($_GET['input'])){
-    if (correctBrackets($_GET['input'])){
-        echo "Правлиьно";
-    } else echo "Не правильно";
+function render($cols,$rows){
+    $beginCol = 0;
+    $beginRow = 0;
+    $endCol = $cols;
+    $endRow = $rows;
+    $array = [];
+    $count = 1;
+    $size = $cols * $rows;
+    while ($beginCol < $endCol || $beginRow < $endRow){
+        for ($col = $beginCol; $col < $endCol; $col++){
+            $array[$beginRow][$col] = $count++;
+        }
+
+        if ($count > $size){
+            break;
+        }
+
+        for ($row = $beginRow+1; $row < $endRow; $row++){
+            $array[$row][$endCol-1] = $count++;
+        }
+
+        if ($count > $size){
+            break;
+        }
+
+        for ($col = $endCol-2; $col >= $beginCol; $col--){
+            $array[$endRow-1][$col] = $count++;
+        }
+
+        if ($count > $size){
+            break;
+        }
+
+        for ($row = $endRow-2; $row > $beginRow; $row--){
+            $array[$row][$beginCol] = $count++;
+        }
+        
+        $beginRow++;
+        $endCol--;
+        $endRow--;
+        $beginCol++;
+    }
+    for ($i=0;$i<$rows;$i++){
+        for ($j=0;$j<$cols;$j++){
+            echo $array[$i][$j].' ';
+        }
+        echo PHP_EOL;
+    }
 }
 
-function correctBrackets($input){
-    $input = preg_replace('/[^(){}\[\]\'\"`]/','',$input);
-    echo $input . "<br>";
-    $brackets = str_split($input);
-    $stack = new SplStack();
-    $map = [']' => '[', ')' => '(', '}' => '{'];
-    $closing = array_keys($map);
-    foreach ($brackets as $bracket){
-        if (!in_array($bracket,$closing)){
-            $stack->push($bracket);
-        } else{
-            if ($stack->isEmpty()){
-                return false;
-            }
-            $stack->pop();
-        }
-    }
-    return $stack->isEmpty();
-}
+
+render(5,3);
 
 
