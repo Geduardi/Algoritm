@@ -1,21 +1,30 @@
 <?php
-/**
- * 2.Определить сложность следующих алгоритмов. Сколько произойдет итераций?
-1)
-$n = 100;
-$array[]= [];
-for ($i = 0; $i < $n; $i++) {  //O(n)
-for ($j = 1; $j < $n; $j *= 2) {   //O(log(n))
-$array[$i][$j]= true;
-} }
- * Сложность O(n*log(n))
-2)
-$n = 100;
-$array[] = [];
-for ($i = 0; $i < $n; $i += 2) { //O(n/2) = O(n)
-for ($j = $i; $j < $n; $j++) {  //O(n) в первой итерации, O(1) в последней = O(n/2) = O(n)
-$array[$i][$j]= true;
-} }
- * Сложность O(n^2)
- */
+$array = [1, 2 ,3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16];
 
+function findMissedNumber($array,$indexIncrease = 0){
+    if (end($array) - count($array) == 0){
+        echo 'Нет пропущенных чисел';
+        return;
+    }
+    $baseIndex = floor(count($array)/2);
+    if ($array[$baseIndex] - $baseIndex  == 1 + $indexIncrease){
+        if ($array[$baseIndex+1] - $baseIndex == 2 + $indexIncrease){
+            $indexIncrease = $array[$baseIndex];
+            $array = array_slice($array,$indexIncrease);
+            findMissedNumber($array,$indexIncrease);
+        } else {
+            echo $array[$baseIndex]+1;
+            return;
+        }
+    } else {
+        if ($array[$baseIndex-1] - $baseIndex == 1 +$indexIncrease){
+            $array = array_slice($array,0,$baseIndex);
+            findMissedNumber($array,$indexIncrease);
+        } else {
+            echo $array[$baseIndex]-1;
+            return;
+        }
+    }
+}
+
+findMissedNumber($array);
